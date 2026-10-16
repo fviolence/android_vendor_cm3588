@@ -1,0 +1,160 @@
+// CM3588 Mali-G610 g29p0 userspace from FriendlyELEC Android TV 14.
+// Verified at runtime with Android 16 / WayDroid (2026-10-18).
+// AIDL allocator V1 and graphics.common V4 remain Android-source generated.
+// Do not bundle copies of AOSP V4, V7, allocator-V1/V2 NDK or libgralloctypes.
+
+cc_defaults {
+    name: "cm3588_mali_prebuilt_defaults",
+    vendor: true,
+    compile_multilib: "64",
+    strip: { none: true },
+}
+
+// Build-time compatibility module for the g29p0 V4 AIDL dependency.
+// libgralloctypes separately requires graphics.common V7.
+//
+// Do not install this prebuilt: PRODUCT_PACKAGES installs the
+// Android-source-generated vendor V4 library instead.
+cc_prebuilt_library_shared {
+    name: "cm3588_graphics_common_v4_compat",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    installable: false,
+    stem: "android.hardware.graphics.common-V4-ndk",
+    srcs: [
+        "proprietary/lib64/android.hardware.graphics.common-V4-ndk.so",
+    ],
+    shared_libs: [
+        "libbinder_ndk",
+        "android.hardware.common-V2-ndk",
+        "libc++",
+    ],
+    check_elf_files: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "arm.graphics-V5-ndk",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/lib64/arm.graphics-V5-ndk.so"],
+    shared_libs: ["libbinder_ndk", "libc++"],
+}
+
+cc_prebuilt_library_shared {
+    name: "libGLES_mali",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/lib64/egl/libGLES_mali.so"],
+    relative_install_path: "egl",
+    shared_libs: [
+        "android.hardware.graphics.allocator-V2-ndk",
+        "android.hardware.graphics.mapper@4.0",
+        "libgralloctypes",
+        "libbinder_ndk",
+        "libnativewindow",
+        "libutils",
+        "liblog",
+        "libhidlbase",
+        "libcutils",
+        "libhardware",
+        "libbase",
+        "libdmabufheap",
+        "libz",
+        "libc++",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "android.hardware.graphics.allocator-V1-arm",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/lib64/hw/android.hardware.graphics.allocator-V1-arm.so"],
+    relative_install_path: "hw",
+    shared_libs: [
+        "arm.graphics-V5-ndk",
+        "cm3588_graphics_common_v4_compat",
+        "android.hardware.graphics.common@1.2",
+        "libhidlbase",
+        "libgralloctypes",
+        "libdrm",
+        "libutils",
+        "liblog",
+        "libhardware",
+        "libcutils",
+        "libbase",
+        "android.hardware.graphics.allocator-V1-ndk",
+        "android.hardware.graphics.mapper@4.0",
+        "libbinder_ndk",
+        "libdmabufheap",
+        "libvndksupport",
+        "libc++",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "android.hardware.graphics.allocator-V1-bifrost",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/lib64/hw/android.hardware.graphics.allocator-V1-bifrost.so"],
+    relative_install_path: "hw",
+    shared_libs: [
+        "arm.graphics-V5-ndk",
+        "cm3588_graphics_common_v4_compat",
+        "android.hardware.graphics.common@1.2",
+        "libhidlbase",
+        "libgralloctypes",
+        "libdrm",
+        "libutils",
+        "liblog",
+        "libhardware",
+        "libcutils",
+        "libbase",
+        "android.hardware.graphics.allocator-V1-ndk",
+        "android.hardware.graphics.mapper@4.0",
+        "libbinder_ndk",
+        "libdmabufheap",
+        "libc++",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "android.hardware.graphics.mapper@4.0-impl-bifrost",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/lib64/hw/android.hardware.graphics.mapper@4.0-impl-bifrost.so"],
+    relative_install_path: "hw",
+    shared_libs: [
+        "arm.graphics-V5-ndk",
+        "cm3588_graphics_common_v4_compat",
+        "android.hardware.graphics.common@1.2",
+        "libbase",
+        "libhardware",
+        "liblog",
+        "libcutils",
+        "libdmabufheap",
+        "libsync",
+        "libutils",
+        "libnativewindow",
+        "libhidlbase",
+        "libgralloctypes",
+        "libdrm",
+        "android.hardware.graphics.mapper@4.0",
+        "libc++",
+    ],
+}
+
+cc_prebuilt_binary {
+    name: "android.hardware.graphics.allocator-V1-service",
+    defaults: ["cm3588_mali_prebuilt_defaults"],
+    srcs: ["proprietary/bin/hw/android.hardware.graphics.allocator-V1-service"],
+    relative_install_path: "hw",
+    init_rc: ["proprietary/etc/init/android.hardware.graphics.allocator-V1-service.rc"],
+    vintf_fragments: ["proprietary/etc/vintf/manifest/manifest_allocator.xml"],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libbinder_ndk",
+        "libdmabufheap",
+        "cm3588_graphics_common_v4_compat",
+        "android.hardware.graphics.common@1.2",
+        "android.hardware.graphics.allocator-V1-ndk",
+        "android.hardware.graphics.allocator-V1-arm",
+        "libc++",
+    ],
+}
